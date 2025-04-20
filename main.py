@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 try:
     logger.info("Loading YOLO model...")
     # model = YOLO(r"model\model_- 31 august 2024 2_41.onnx", task='detect')
-    model = YOLO(r"model\model_- 19 april 2025 16_02.onnx")
+    model = YOLO(r"model\best.engine")
     logger.info("YOLO model loaded successfully.")
 except FileNotFoundError:
     logger.critical(f"Model file not found at path: model\\model_- 19 april 2025 16_02.onnx")
@@ -175,6 +175,9 @@ def capture_and_detect(browser_window):
                     # logger.debug("Running YOLO detection...")
                     try:
                         results = model(current_frame_bgr, imgsz=inference_size, conf=confidence_threshold, iou=iou_threshold, device=device, verbose=False)
+                        #speed_info = results[0].speed
+                        # 你可以打印整个字典，或者只打印推理时间
+                        #logger.info(f"Speed Info: {speed_info}")
                     except Exception as e_yolo:
                         logger.error(f"YOLO detection error: {e_yolo}"); logger.error(traceback.format_exc()); time.sleep(0.1); continue
 
@@ -219,7 +222,7 @@ def capture_and_detect(browser_window):
 
                     # --- Timing and Sleep ---
                     loop_end_time = time.perf_counter(); processing_time = loop_end_time - loop_start_time
-                    logger.debug(f"Loop time: {processing_time:.4f}s")
+                    #logger.info(f"Loop time: {processing_time:.4f}s")
                     time.sleep(0.001)
 
                 except Exception as e_loop:
@@ -358,7 +361,7 @@ if __name__ == "__main__":
                 # logger.debug("Main loop: Checking quit key.")
                 key = cv2.waitKey(33) # Wait ~30ms (limits display loop rate)
                 if key != -1:
-                    if key & 0xFF == ord('q'): logger.info("Quit key 'q' pressed."); running = False; break
+                    if key & 0xFF == ord('p'): logger.info("Quit key 'p' pressed."); running = False; break
                     # else: logger.debug(f"Key pressed: {key}")
             except Exception as e_wait: logger.error(f"cv2.waitKey error: {e_wait}"); running = False; break
 
